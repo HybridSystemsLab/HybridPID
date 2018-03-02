@@ -1,6 +1,6 @@
 function xdot = f_PID(x)
 
-global A B cont kp ki kd test
+global A B cont kp ki kd DynamicGains threshold
 
 
 z1  = x(1);
@@ -23,7 +23,7 @@ if(cont)
     u = -K*x1;
 end
 
-if(abs(z1t-r) < .04*r && test)
+if(abs(z1t-r) < threshold*r && DynamicGains)
    kp =  250;
    ki =  350;
    kd =  30;

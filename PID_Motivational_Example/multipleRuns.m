@@ -1,25 +1,26 @@
 clear all
 close all
 clc
-global kp ki kd T1 T2 test
+global kp ki kd T1 T2 DynamicGains threshold
 
-test = 0;
+DynamicGains = 0;
+threshold = .01;
 kp =  300;
 ki =  200;
 kd =  10;
 
-testingPID
-plot(saved_t,saved_y,'--k');
-hold on
+%testingPID
+%plot(saved_t,saved_y,'--k');
+%hold on
 
 
 kp =  250;
 ki =  350;
 kd =  30;
 
-testingPID
-plot(saved_t,saved_y,'--k');
-hold on
+%testingPID
+%plot(saved_t,saved_y,'--k');
+%hold on
 
 
 for index = 1:3
@@ -42,24 +43,31 @@ for index = 1:3
             kd =  30;
             T1 = .025;
             T2 = 2*T1;
-            color = 'r';
+            color = 'k';
         case 3
-            test = 1;
+            DynamicGains = 1;
+            threshold = .05;
             T1 = .025;
             T2 = 2*T1;
-            color = 'g';
+            color = 'b';
         case 4
-            T1 = .06;
-            T2 = .07;
-            color = 'm';
+            DynamicGains = 1;
+            threshold = .1;
+            T1 = .025;
+            T2 = 2*T1;
+            color = 'b';
         case 5
-            T1 = .05;
+            DynamicGains = 1;
+            threshold = .1;
+            T1 = .025;
             T2 = 2*T1;
-            color = 'r';
+            color = 'b';
         otherwise
-            T1 = .01;
+            DynamicGains = 1;
+            threshold = .1;
+            T1 = .025;
             T2 = 2*T1;
-            color = 'k';
+            color = 'b';
     end
     
     run_PID
@@ -87,6 +95,9 @@ for index = 1:3
 end
 
 plot(t,r,'r');
+legend('K_0 Gains',...
+       'K_1 Gains',...
+       'Dynamic Gains')
 
 %legend('No Intermittence',...
 %           'T_1 = 0.01, T_2 = 0.02',...
