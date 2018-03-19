@@ -1,6 +1,9 @@
 function inside = D_PID(x) 
+global cont
 
-tau = x(5);
+if(cont) inside = 0; return; end
+
+tau = x(6);
 
 if tau <= 0
     inside = 1;

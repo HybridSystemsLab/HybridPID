@@ -1,6 +1,11 @@
 function [value] = C_PID(x) 
 
-tau = x(5);
+% If continuous - always flow.
+global cont
+if(cont) value = 1; return; end
+
+% Timer
+tau = x(6);
 
 if tau > 0
     value = 1;

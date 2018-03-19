@@ -1,29 +1,30 @@
 function xdot = f_PID(x)
 
-global A B 
+global Af cont K t_ u_ counter
 z1  = x(1);
 z2  = x(2);
 zI  = x(3);
 u   = x(4);
-tau = x(5);
-ms  = x(6);
-tauI= x(7);
-r   = x(8);
-time= x(9);
+ms  = x(5);
+tau = x(6);
+r   = x(7);
+time = x(8);
 
-xI = [z1 z2 zI]';
-x1 = [xI; u];
-x2 = [tau ms tauI]';
+x1 = [z1; z2; zI; u; ms];
 
-Af = [A [0;0] B;zeros(2,4)];
-    
-C = [1 0];
-D = 0;
+if(cont)
+    u = -K*x1;
+    ms = z1-r;
+    t_(counter) = time;
+    u_(counter) = u;
+    counter = counter + 1;
+end
+
+x1 = [z1; z2; zI; u; ms];
+x2 = tau;
 
 x1_dot = Af*x1;
-x2_dot = [-1;
-           0;
-           1];
+x2_dot = -1;
        
 xdot = [x1_dot;
         x2_dot;

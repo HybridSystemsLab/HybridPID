@@ -1,6 +1,8 @@
 function [value] = C_PID(x) 
+global cont
 
-tau = x(5);
+if(cont) value = 1; return; end
+tau = x(6);
 
 if tau > 0
     value = 1;
