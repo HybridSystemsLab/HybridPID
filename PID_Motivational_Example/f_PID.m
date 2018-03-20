@@ -1,6 +1,6 @@
 function xdot = f_PID(x)
 
-global A B kp ki kd DynamicGains threshold cont
+global A B kp ki kd DynamicGains threshold cont t_switch
 
 
 z1  = x(1);
@@ -13,14 +13,16 @@ tauI= x(7);
 r   = x(8);
 z1t = x(9);
 z2t = x(10);
+time= x(11);
 
 C = [1 0];
 D = 0;
 
-if(abs(z1t-r) < threshold*r && DynamicGains)
+if(abs(z1t-r) < threshold*r && DynamicGains && t_switch == 0)
    kp =  250;
    ki =  350;
    kd =  30;
+   t_switch = time
 end
 
 if(cont)
@@ -48,6 +50,7 @@ zt_dot = A*[z1t;z2t] + B*u;
 xdot = [x1_dot;
         x2_dot;
         0;
-        zt_dot];
+        zt_dot;
+        1];
 
 end

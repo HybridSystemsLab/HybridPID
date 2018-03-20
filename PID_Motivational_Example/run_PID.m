@@ -1,3 +1,4 @@
+
 %close all 
 %clear all
 %clc
@@ -34,8 +35,9 @@ tauI_0= 0;
 r_0   = 1;
 z_1t  = 0;
 z_2t  = 0;
+time0 = 0;
 
-x0 = [z1_0,z2_0,zI_0,u_0,ms_0,tau_0,tauI_0,r_0,z_1t,z_2t];
+x0 = [z1_0,z2_0,zI_0,u_0,ms_0,tau_0,tauI_0,r_0,z_1t,z_2t,time0];
 
 % simulate
 [t,j,x] = HyEQsolver( @f_PID,@g_PID,@C_PID,@D_PID,...

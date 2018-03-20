@@ -28,13 +28,6 @@ D = 0;
 bf = B;
 bs = B;
 
-%if(tauI == 0) 
-%    Kg = 0;
-%else
-%    Kg = ((z1-r)-ms)/(tauI*z1);
-%end
-%K = [kp*(1-r/z1)+kd*Kg 0 ki 0];
-
 Kg = inv(1+ kd*C*bf);
 K = [[kp*(1-r/z1) 0]+kd*Kg*A(1,:) ki 0 0];
 
@@ -53,5 +46,6 @@ xplus = [x1_plus;
          x2_plus
          1;
          z1;
-         z2];
+         z2;
+         x(11)];
 end
