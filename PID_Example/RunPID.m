@@ -30,14 +30,60 @@ C = [1 0];
 
 %%%%% Intermittency %%%%%%
 T1 = .01;
-T2 = T1;
+T2 = .05;
 
+%%%%% Gains %%%%%%
+kp = 230;
+ki = 190;
+kd = 21;
+kp_t = kp*C - inv(1+ kd*C*B)*kd*C*B*kp*C;
+ki_t = ki - inv(1+ kd*C*B)*kd*C*B*ki;
+kd_t = inv(1+ kd*C*B)*kd*C*A;
+K = [kp_t+kd_t ki_t 0 0];
+
+%%%%% Transformations %%%%%%
+Af = [A [0;0] B [0;0];...
+     0 0  0   0   1;...
+      zeros(2,5)];
+      
+Ag = [1 0 0 0 0;
+      0 1 0 0 0;
+      0 0 1 0 0;
+      -K;
+      C  0 0 0];
+simulate_PID
+
+H1 = expm(Af*T2)*Ag;
+H2 = expm(Af*T1)*Ag;
+Hmid = expm(Af*(T1+T2)/2)*Ag;
+
+%%%%%%%%% SOLVE FOR P %%%%%%%%%%%
+    n = length(Af);
+    cvx_begin sdp
+        variable P(n,n) symmetric
+        H1'*P*H1 - P <= -eye(n)
+        Hmid'*P*Hmid - P <= -eye(n)
+        H2'*P*H2 - P <= -eye(n)
+        P >= eye(n)
+    cvx_end
+subplot(311)
+plot(t,z1)
+subplot(312)
+a = .01;
+for i = 1:length(t)
+    V(i) = x(i,1:5)*expm(Af'*x(i,6))*P*expm(Af*x(i,6))*x(i,1:5)';
+end
+plot(t,V)
+subplot(313)
+plot(t,x(:,6))
+
+%{
 for index = 1:100
 
     %%%%% Gains %%%%%%
     rand_p = 200;
     rand_i = 200;
-    rand_d = 50;
+    rand_d = 25;
 
     % Plug and chuggggg
     kp =  100 + rand_p*rand;
@@ -51,7 +97,7 @@ for index = 1:100
     
     %%%%% Transformations %%%%%%
     Af = [A [0;0] B [0;0];...
-          0 0  0   0   1;...
+         0 0  0   0   1;...
           zeros(2,5)];
       
     Ag = [1 0 0 0 0;
@@ -138,3 +184,4 @@ plot(t,V,'b');
 legend('Continuous Case','With Intermittency');
 xlabel('$t(s)$','Interpreter','latex','FontSize', 18);
 ylabel('$V(x)$','Interpreter','latex','FontSize', 18);
+%}
