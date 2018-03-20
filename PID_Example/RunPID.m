@@ -51,7 +51,6 @@ Ag = [1 0 0 0 0;
       0 0 1 0 0;
       -K;
       C  0 0 0];
-simulate_PID
 
 H1 = expm(Af*T2)*Ag;
 H2 = expm(Af*T1)*Ag;
@@ -66,16 +65,86 @@ Hmid = expm(Af*(T1+T2)/2)*Ag;
         H2'*P*H2 - P <= -eye(n)
         P >= eye(n)
     cvx_end
-subplot(311)
-plot(t,z1)
-subplot(312)
-a = .01;
+    
+    
+%%%%%% Continuous Case %%%%%%
+cont = 1;
+counter = 1;
+
+simulate_PID
+
+% plot solution
+figure(1)
+subplot(2,1,1);
+plot(t,z1,'k');
+hold on
+subplot(2,1,2); 
+plot(t_,u_,'k');
+hold on
+
+%%%%%%%%%%% V(x) %%%%%%%%%%%
+x1 = [z1';z2';zI';u_(1:length(z1));ms'];
+for i = 1:length(t)
+    V(i) = x(i,1:5)*expm(Af'*0)*P*expm(Af*0)*x(i,1:5)';
+end
+figure(2) 
+plot(t,V,'k');
+hold on
+
+
+%%%%%%%% Intermittent Case %%%%%%%%
+cont = 0;
+simulate_PID
+
+% plot solution
+figure(1)
+subplot(2,1,1);
+plot(t,z1,'b');
+grid on
+legend('Continuous Case','With Intermittency');
+ylabel('$y(t)$','Interpreter','latex','FontSize', 18);
+
+subplot(2,1,2); 
+plot(t,u,'b');
+grid on
+legend('Continuous Case','With Intermittency');
+ylabel('$u(t)$','Interpreter','latex','FontSize', 18);
+xlabel('$t(s)$','Interpreter','latex','FontSize', 18);
+
+%%%%%%%%%%% V(x) %%%%%%%%%%%
+x1 = [z1';z2';zI';u';ms'];
+clear V
 for i = 1:length(t)
     V(i) = x(i,1:5)*expm(Af'*x(i,6))*P*expm(Af*x(i,6))*x(i,1:5)';
 end
-plot(t,V)
-subplot(313)
-plot(t,x(:,6))
+
+figure(2) 
+grid on
+plot(t,V,'b');
+legend('Continuous Case','With Intermittency');
+xlabel('$t(s)$','Interpreter','latex','FontSize', 18);
+ylabel('$V(x)$','Interpreter','latex','FontSize', 18);
+
+
+    
+    
+    
+
+
+
+
+
+
+%subplot(311)
+%plot(t,z1)
+%subplot(312)
+%a = .01;
+%for i = 1:length(t)
+%    V(i) = x(i,1:5)*expm(Af'*x(i,6))*P*expm(Af*x(i,6))*x(i,1:5)';
+%end
+%plot(t,V)
+%subplot(313)
+%plot(t,x(:,6))
 
 %{
 for index = 1:100
