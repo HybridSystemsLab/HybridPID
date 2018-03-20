@@ -55,8 +55,9 @@ Hmid = expm(Af*(T1+T2)/2)*Ag;
 subplot(311)
 plot(t,z1)
 subplot(312)
+a = .01;
 for i = 1:length(t)
-    V(i) = x(i,1:3)*Ag'*expm(Af'*x(i,4))*P*expm(Af*x(i,4))*Ag*x(i,1:3)';
+    V(i) = x(i,1:3)*expm(Af'*x(i,4))*P*expm(Af*x(i,4))*x(i,1:3)';
 end
 plot(t,V)
 subplot(313)
